@@ -197,21 +197,20 @@ public class CookieCutter
                             inQuoted = false;
                             i--;
                             continue;
+
                         case ';':
                             if (_compliance == CookieCompliance.RFC6265)
                                 reject = true;
                             else
                                 unquoted.append(c);
                             continue;
-                            
+
                         default:
                             unquoted.append(c);
-                            continue;
                     }
                 }
                 else
                 {
-                  
                     // Handle name and value state machines
                     if (invalue)
                     {
@@ -332,12 +331,12 @@ public class CookieCutter
                                 // fall through to default case
 
                             default:
-                                 if (_compliance == CookieCompliance.RFC6265 && quoted)
+                                if (_compliance == CookieCompliance.RFC6265 && quoted)
                                 {
                                     reject = true;
                                     continue;
                                 }
-         
+
                                 if (quoted)
                                 {
                                     // must have been a bad internal quote. let's fix as best we can
@@ -349,11 +348,10 @@ public class CookieCutter
 
                                 if (_compliance == CookieCompliance.RFC6265_LEGACY && isRFC6265RejectedCharacter(inQuoted, c))
                                     reject = true;
- 
+
                                 if (tokenstart < 0)
                                     tokenstart = i;
                                 tokenend = i;
-                                continue;
                         }
                     }
                     else
@@ -418,16 +416,14 @@ public class CookieCutter
         // LEGACY test
         if (_compliance == CookieCompliance.RFC6265_LEGACY)
         {
-         if (inQuoted)
+            if (inQuoted)
             {
                 // We only reject if a Control Character is encountered
                 if (Character.isISOControl(c))
                     return true;
-             }
             }
-        }
             else
-           {
+            {
                 return Character.isISOControl(c) || // control characters
                     c > 127 || // 8-bit characters
                     c == ',' || // comma
