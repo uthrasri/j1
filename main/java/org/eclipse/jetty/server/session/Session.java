@@ -498,7 +498,10 @@ public class Session implements SessionHandler.SessionIf
     {
         try (Lock lock = _lock.lock())
         {
-            checkValidForRead();
+            if (isInvalid())
+            {
+                throw new IllegalStateException("Session not valid");
+            }
             return _sessionData.getLastAccessed();
         }
     }
@@ -944,18 +947,14 @@ public class Session implements SessionHandler.SessionIf
                     // do the invalidation
                     _handler.callSessionDestroyedListeners(this);
                 }
-                catch (Exception e)
-                {
-                    LOG.warn("Error during Session destroy listener", e);
-                }    
                 finally
                 {
                     // call the attribute removed listeners and finally mark it
                     // as invalid
                     finishInvalidate();
-                    // tell id mgr to remove sessions with same id from all contexts
-                    _handler.getSessionIdManager().invalidateAll(_sessionData.getId());    
                 }
+                // tell id mgr to remove sessions with same id from all contexts
+                _handler.getSessionIdManager().invalidateAll(_sessionData.getId());
             }
         }
         catch (Exception e)
